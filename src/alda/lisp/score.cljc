@@ -1,6 +1,5 @@
 (ns alda.lisp.score
   (:require [alda.lisp.score.part]))
-(in-ns 'alda.lisp)
 
 (log/debug "Loading alda.lisp.score...")
 

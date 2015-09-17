@@ -1,5 +1,4 @@
 (ns alda.lisp.attributes)
-(in-ns 'alda.lisp)
 
 (log/debug "Loading alda.lisp.attributes...")
 
