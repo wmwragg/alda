@@ -20,6 +20,7 @@ import clojure.lang.ISeq;
 import clojure.lang.Symbol;
 import clojure.lang.ArraySeq;
 import com.google.gson.*;
+import com.jcabi.manifests.Manifests;
 
 import java.net.MalformedURLException;
 import java.io.BufferedInputStream;
@@ -206,7 +207,7 @@ public final class Util {
     }
   }
 
-  public static String readFile(String path) {
+  public static String readResourceFile(String path) {
     StringBuilder out = new StringBuilder();
     BufferedReader reader = null;
     try {
@@ -233,7 +234,7 @@ public final class Util {
   }
 
   public static String version() {
-    return readFile("version.txt").trim();
+    return Manifests.read("alda-version");
   }
 
   public static void updateAlda() throws URISyntaxException {
