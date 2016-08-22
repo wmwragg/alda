@@ -16,7 +16,15 @@
 
 (defn new-midi-synth
   []
-  (doto ^Synthesizer (MidiSystem/getSynthesizer) .open))
+  (let [synth (MidiSystem/getSynthesizer)]
+    (comment
+      "Disabling jitter correction is a work-around for a bug where the audio
+       clock gets out of sync after suspending the server process.
+
+       Source: http://stackoverflow.com/a/38948413/2338327")
+    (if (instance? com.sun.media.sound.SoftSynthesizer synth)
+      (doto synth (.open nil {"jitter correction" false}))
+      (doto synth .open))))
 
 (def ^:dynamic *midi-synth-pool* (LinkedBlockingQueue.))
 
