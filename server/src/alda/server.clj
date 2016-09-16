@@ -2,13 +2,31 @@
   (:require [alda.util                 :as    util]
             [alda.version              :refer (-version-)]
             [cheshire.core             :as    json]
+            [clojure.string            :as    str]
             [me.raynes.conch.low-level :as    sh]
             [taoensso.timbre           :as    log]
             [zeromq.device             :as    zmqd]
             [zeromq.zmq                :as    zmq])
-  (:import [java.net ServerSocket]
+  (:import [java.io OutputStreamWriter]
+           [java.net ServerSocket]
            [java.util.concurrent ConcurrentLinkedQueue]
            [org.zeromq ZFrame ZMQException ZMQ$Error ZMsg]))
+
+(def process-helper
+  ; starts an alda.ProcessHelper (defined in the Java part of the codebase)
+  ; to be used for starting child processes
+  (let [{:keys [in out err] :as process} (sh/proc "java" "ProcessHelper")]
+    (.close out)
+    (.close err)
+    process))
+
+(def process-helper-output-stream
+  (OutputStreamWriter. (:in process-helper)))
+
+(defn spawn-process
+  [cmd]
+  (.write process-helper-output-stream cmd)
+  (.flush (:in process-helper)))
 
 ; the number of ms between heartbeats
 (def ^:const HEARTBEAT-INTERVAL 1000)
@@ -157,10 +175,7 @@
               ; server (e.g. /usr/local/bin/alda)
               [program-path "--port" (str port) "--alda-fingerprint" "worker"])]
     (dotimes [_ workers]
-      (let [{:keys [in out err]} (apply sh/proc cmd)]
-        (.close in)
-        (.close out)
-        (.close err)))))
+      (spawn-process (str/join " " cmd)))))
 
 (defn supervise-workers!
   "Ensures that there are at least `desired` number of workers available by
