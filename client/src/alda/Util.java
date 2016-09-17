@@ -18,7 +18,10 @@ import clojure.lang.IFn;
 import clojure.lang.ISeq;
 import clojure.lang.Symbol;
 import clojure.lang.ArraySeq;
+
 import com.google.gson.*;
+
+import com.zaxxer.nuprocess.*;
 
 import java.net.MalformedURLException;
 import java.io.BufferedInputStream;
@@ -244,10 +247,8 @@ public final class Util {
     Object[] objectArray = concat(program, args);
     String[] execArgs = Arrays.copyOf(objectArray, objectArray.length, String[].class);
 
-    Process p = Runtime.getRuntime().exec(execArgs);
-    p.getInputStream().close();
-    p.getOutputStream().close();
-    p.getErrorStream().close();
+    NuProcessBuilder pb = new NuProcessBuilder(execArgs);
+    NuProcess process = pb.start();
   }
 
   public static void runProgramInFg(String... args)
