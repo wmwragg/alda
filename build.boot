@@ -16,7 +16,9 @@
                   [org.clojure/clojure    "1.8.0"]
                   [instaparse             "1.4.1"]
                   [io.aviso/pretty        "0.1.20"]
-                  [com.taoensso/timbre    "4.1.1"]
+                  ; [com.taoensso/timbre    "4.1.1"]
+                  ; this is the encore version used by the latest timbre (4.7.4)
+                  [com.taoensso/encore    "2.79.1"]
                   [cheshire               "5.6.3"]
                   [djy                    "0.1.4"]
                   [jline                  "2.12.1"]
